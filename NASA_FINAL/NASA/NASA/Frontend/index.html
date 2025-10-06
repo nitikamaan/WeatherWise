@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Temperature Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="navbar top-nav">
+            <div class="logo">
+                <div class="logo-pic">
+                    <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path clip-rule="evenodd"
+                            d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+                            fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </div>
+                
+                <span class="logo-text">WeatherWise</span>
+            </div>
+            <div class="nav-center">
+                <a class="nav-item active" href="#dashboard">Dashboard</a>
+                <a class="nav-item" href="#temperature-over-time">Overview</a>
+                <a class="nav-item" href="#temperature-overview">Analytics</a>
+                <a class="nav-item" href="#recent-alerts">Alerts</a>
+            </div>
+            <div class="buttons">
+                <button class="info">
+                    <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M207.99414,192h-8V120a72,72,0,0,0-144,0v72h-8a8,8,0,0,0,0,16h48.68652a32,32,0,0,0,62.626,0h48.68652a8,8,0,0,0,0-16Zm-79.99414,24a16,16,0,0,1-14.83252-10.6665h29.665A16,16,0,0,1,128,216Z"></path>
+                    </svg>
+                </button>
+                <button class="download">
+                    <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M224,152v56a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H208V152a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,132.69V40a8,8,0,0,0-16,0v92.69L93.66,106.34a8,8,0,0,0-11.32,11.32Z">
+                        </path>
+                    </svg>
+                </button>
+                <button class="cat">
+                    <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Page Header -->
+        <div id="dashboard" class="page-header" style="padding: 0 16px;">
+            <h1>Dashboard</h1>
+            <h4>Know your skies before you go. Let history guide your next escape.</h4>
+        </div>
+
+        <!-- Quick Metrics (static placeholders, optional) -->
+        <div class="metrics-grid" style="padding: 0 16px;">
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15 13V5c0-1.66-1.34-3-3-3S9 3.34 9 5v8c-1.21.91-2 2.37-2 4 0 2.76 2.24 5 5 5s5-2.24 5-5c0-1.63-.79-3.09-2-4zm-4-2V5c0-.55.45-1 1-1s1 .45 1 1v6h-2z"/></svg>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-label">Current</div>
+                    <div class="metric-value">-273°C</div>
+                    <div class="metric-sublabel">Sector Alpha</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon trend-up">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-label">24h Change</div>
+                    <div class="metric-value">+12.5°C</div>
+                    <div class="metric-sublabel">Solar exposure</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-label">Active Sensors</div>
+                    <div class="metric-value">24</div>
+                    <div class="metric-sublabel">Online</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon alert">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-label">Alerts</div>
+                    <div class="metric-value">3</div>
+                    <div class="metric-sublabel">Critical zones</div>
+                </div>
+            </div>
+        </div>
+
+        <p class="section-intro">Select your destination and date to reveal the risk of heat, rain, wind, or discomfort.</p>
+
+        <!-- Search -->
+        <div class="searchbar">
+            <input type="search" id="locationInput" placeholder="Enter location">
+            <button onclick="searchLocation()">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke=white stroke-width="2"
+                        fill="none" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Map + Controls Grid -->
+        <div class="map-controls-grid">
+            <!-- Map Panel (Left) -->
+            <div class="map dashboard-panel">
+                <div class="panel-header" style="margin-bottom: 12px;">
+                    <h3>Location Map</h3>
+                </div>
+                <div id="map" style="height: 500px;"></div>
+            </div>
+
+            <!-- Controls Panel (Right) -->
+            <div class="dashboard-panel">
+                <div class="panel-header" style="margin-bottom: 12px;">
+                    <h3>Options</h3>
+                </div>
+                <div class="button-group no-side-padding">
+                    <div class="dayslider" style="max-width: 280px;">
+                        <input type="date" id="dateInput" aria-label="Select date" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border); background: var(--panel); color: var(--text);" />
+                    </div>
+                    <!-- Inline Mini Calendar below date input -->
+                    <div id="miniCalendar" class="mini-calendar"></div>
+                    <div class="dayslider">
+                        <select id="choices" name="choices">
+                            <option value="">-- Select Date Range --</option>
+                            <option value="option1">Last 7 days</option>
+                            <option value="option2">Last 15 days</option>
+                            <option value="option3">Last 30 days</option>
+                            <option value="option4">Last 90 days</option>
+                        </select>
+                    </div>
+                    <button class="big-button">Get Odds</button>
+                    <button id="exportJsonBtn" class="big-button" style="min-width:160px; background: transparent; color: var(--text); border:1px solid var(--border);">Export JSON</button>
+                    <button id="exportCsvBtn" class="big-button" style="min-width:160px; background: transparent; color: var(--text); border:1px solid var(--border);">Export CSV</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Temperature Chart Panel -->
+        <h2 id="temperature-over-time" style="padding: 0 16px;">Temperature Over Time</h2>
+        <div class="chart-container dashboard-panel" style="margin: 0 16px 16px;">
+          <canvas id="temperatureChart"></canvas>
+        </div>
+
+        <!-- Additional Dashboard Panels -->
+        <div class="dashboard-grid" style="padding: 0 16px 16px;">
+            <!-- Large placeholder for consistency (can be swapped with map/chart later) -->
+            <div id="temperature-overview" class="dashboard-panel large">
+                <div class="panel-header">
+                    <h3>Temperature Overview</h3>
+                    <div class="time-filters">
+                        <button class="time-filter active">24H</button>
+                        <button class="time-filter">7D</button>
+                        <button class="time-filter">30D</button>
+                    </div>
+                </div>
+                <div class="overview-chart">
+                    <div class="overview-meta">
+                        <div class="overview-subtitle">Weather Conditions</div>
+                        <div class="overview-title">Average</div>
+                        <div class="overview-trend">Past 10 Years <span class="positive">+5%</span></div>
+                    </div>
+                    <div class="overview-canvas-wrap">
+                        <canvas id="overviewChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sector Status -->
+            <div class="dashboard-panel">
+                <div class="panel-header">
+                    <h3>Sector Status</h3>
+                </div>
+                <div class="sector-list">
+                    <div class="sector-item">
+                        <div class="sector-indicator online"></div>
+                        <div class="sector-info">
+                            <div class="sector-name">Alpha Sector</div>
+                            <div class="sector-temp">-271.2°C</div>
+                        </div>
+                        <div class="sector-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sector-item">
+                        <div class="sector-indicator online"></div>
+                        <div class="sector-info">
+                            <div class="sector-name">Beta Sector</div>
+                            <div class="sector-temp">-268.7°C</div>
+                        </div>
+                        <div class="sector-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sector-item">
+                        <div class="sector-indicator online"></div>
+                        <div class="sector-info">
+                            <div class="sector-name">Gamma Sector</div>
+                            <div class="sector-temp">-275.1°C</div>
+                        </div>
+                        <div class="sector-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sector-item">
+                        <div class="sector-indicator online"></div>
+                        <div class="sector-info">
+                            <div class="sector-name">Delta Sector</div>
+                            <div class="sector-temp">-270.9°C</div>
+                        </div>
+                        <div class="sector-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Alerts -->
+            <div id="recent-alerts" class="dashboard-panel">
+                <div class="panel-header">
+                    <h3>Recent Alerts</h3>
+                </div>
+                <div class="alerts-list">
+                    <div class="alert-item critical">
+                        <div class="alert-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Critical temperature drop detected</div>
+                            <div class="alert-time">Gamma Sector • 6 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="alert-item info">
+                        <div class="alert-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Sensor calibration completed</div>
+                            <div class="alert-time">Alpha Sector • 15 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="alert-item info">
+                        <div class="alert-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">System backup completed</div>
+                            <div class="alert-time">All sectors • 1 hour ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Performance -->
+            <div class="dashboard-panel">
+                <div class="panel-header">
+                    <h3>System Performance</h3>
+                </div>
+                <div class="performance-metrics">
+                    <div class="performance-item">
+                        <div class="performance-label">Data Processing</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 94%"></div>
+                        </div>
+                        <div class="performance-value">94%</div>
+                    </div>
+                    <div class="performance-item">
+                        <div class="performance-label">Network Connectivity</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 87%"></div>
+                        </div>
+                        <div class="performance-value">87%</div>
+                    </div>
+                    <div class="performance-item">
+                        <div class="performance-label">Storage Usage</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 73%"></div>
+                        </div>
+                        <div class="performance-value">73%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forecast Summary (fills the left space beside System Performance) -->
+            <div class="dashboard-panel">
+                <div class="panel-header">
+                    <h3>Forecast Summary</h3>
+                </div>
+                <div class="alerts-list">
+                    <div class="alert-item info">
+                        <div class="alert-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Mild temperature rise expected</div>
+                            <div class="alert-time">Next 24 hours</div>
+                        </div>
+                    </div>
+                    <div class="alert-item info">
+                        <div class="alert-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Low wind risk</div>
+                            <div class="alert-time">All sectors</div>
+                        </div>
+                    </div>
+                    <div class="alert-item info">
+                        <div class="alert-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Chance of light showers</div>
+                            <div class="alert-time">Select coastal regions</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="temp.js"></script>
+    <script src="chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
+        integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="script.js"></script>
+</body>
+</html>
